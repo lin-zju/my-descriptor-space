@@ -1,7 +1,7 @@
 # Ignore data, log directories
 
-data/
-logs/
+/data
+/logs
 notes.md
 .idea
 
