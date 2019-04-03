@@ -17,7 +17,7 @@ def test(model, device, dataloader, evaluator):
     for (data, targets) in dataloader:
         data = {k: v.to(device) for (k, v) in data.items()}
         targets = {k: v.to(device) for (k, v) in targets.items()}
-        results = model(data)
+        results = model.inference(data)
         evaluator.evaluate(data, targets, results)
         
     return evaluator.results()

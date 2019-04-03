@@ -76,8 +76,8 @@ def train(
             
             # batch training
             # put data to device
-            data = data.to(device)
-            targets = targets.to(device)
+            data = {k: v.to(device) for (k, v) in data.items()}
+            targets = {k: v.to(device) for (k, v) in targets.items()}
             
             # get losses
             loss_dict = model(data, targets)

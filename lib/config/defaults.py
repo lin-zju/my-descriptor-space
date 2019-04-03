@@ -12,13 +12,13 @@ _C = CN()
 # EXP
 # -----------------------------------------------------------------------------
 _C.EXP = CN()
-_C.EXP.NAME = 'ResnetSimple'
+_C.EXP.NAME = 'test'
 
 # -----------------------------------------------------------------------------
 # MODEL
 # -----------------------------------------------------------------------------
 _C.MODEL = CN()
-_C.MODEL.NAME = "ResnetSimple"
+_C.MODEL.NAME = "MSNetV0"
 _C.MODEL.TEST = False
 _C.MODEL.DEVICE = "cpu"
 _C.MODEL.PARALLEL = False
