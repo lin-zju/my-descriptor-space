@@ -109,7 +109,6 @@ class COCO(Dataset):
             'map': map,
             'mask': mask,
             'H': H,
-            'path': img_path
         }
         
         return data, targets
