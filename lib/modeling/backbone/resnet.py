@@ -4,6 +4,7 @@
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 import numpy as np
+from lib.config import cfg
 
 
 __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
@@ -115,12 +116,6 @@ class ResNet(nn.Module):
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
-        end_layer = int(cfg.MODEL.BACKBONE.STOP_DOWNSAMPLING[1:]) - 1
-        if end_layer <= 1:
-            raise ValueError("The stride and dilation before layer 2 should not be revised")
-        start_layer = 5
-        if cfg.MODEL.BACKBONE.START_DOWNSAMPLING:
-            start_layer = int(cfg.MODEL.BACKBONE.START_DOWNSAMPLING[1:]) - 1
 
         strides = [1, 1, 1, 1]
 
@@ -190,7 +185,8 @@ def resnet18(pretrained=False, **kwargs):
     """
     model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls["resnet18"], model_dir=kwargs["cfg"].MODEL_DIR))
+        model.load_state_dict(model_zoo.load_url(model_urls["resnet18"], model_dir=cfg.MODEL_DIR))
+        # model.load_state_dict(model_zoo.load_url(model_urls["resnet18"], model_dir=kwargs["cfg"].MODEL_DIR))
     return model
 
 
@@ -263,6 +259,7 @@ class MultiResNet(nn.Module):
             resnet.layer3,
             resnet.layer4
         ]
+        self.stage = stage
         self.model = nn.Sequential(*resnet_module_list[:3+self.stage])
     
     def forward(self, x):

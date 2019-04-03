@@ -5,7 +5,7 @@ import time
 import torch
 import torch.distributed as dist
 from ..utils.metric_logger import MetricLogger
-from .eval import test
+from .evaluator import evaluate
 
 
 def train(
@@ -28,7 +28,7 @@ def train(
     :param checkpoint_arguments: arguments that should be saved in checkpoint
     :param params: training parameters:
                   max_epochs: maximium epochs
-                  checkpoint_periods: how many checkpoints
+                  checkpoint_period: how many checkpoints
                   print_every: report every ? iterations
     :param dataloader_val: validation dataset
     :param evaluator: Evaluator object
@@ -108,7 +108,7 @@ def train(
                             "iter: {iter}",
                             "{meters}",
                             "lr: {lr:.6f}",
-                            "max mem: {memeory:.0f}",
+                            "max mem: {memory:.0f}",
                         ]
                     ).format(
                         eta=eta_string,
@@ -122,11 +122,11 @@ def train(
                 
             # save model, optimizer, scheduler, and other arguments
             if iteration % checkpoint_period == 0:
-                checkpointer.save("model_{:05d}_{:07d}".format(epoch, iteration), **checkpoint_arguments)
+                checkpointer.save("model_{:05d}_{:07d}".format(epoch, iteration))
                 
         # evaluate result after each epoch
         if not evaluator is None and not dataloader_val is None:
-            results = test(model, device, dataloader_val, evaluator)
+            results = evaluate(model, device, dataloader_val, evaluator)
             print(**results)
             
             

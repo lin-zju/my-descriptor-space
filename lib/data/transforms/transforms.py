@@ -1,4 +1,3 @@
-# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 import cv2
 import numpy as np
 from torchvision.transforms import ColorJitter

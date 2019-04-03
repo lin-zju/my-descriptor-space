@@ -1,6 +1,6 @@
 import torch
 
-def test(model, device, dataloader, evaluator):
+def evaluate(model, device, dataloader, evaluator):
     """
     Test engine.
     

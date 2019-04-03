@@ -1,0 +1,28 @@
+EXP:
+  NAME: 'test'
+MODEL:
+  NAME: "MSNetV0"
+  DEVICE: "cuda"
+  PARALLEL: True
+DATASET:
+  TRAIN: "COCO.train"
+  TEST: "COCO.test"
+  VAL: "COCO.test"
+  COCO:
+    WIDTH: 320
+    HEIGHT: 240
+    KPS: 3000
+TRAIN:
+  CHECKPOINT_PERIOD: 1000
+  BATCH_SIZE: 4
+  MAX_EPOCHS: 10
+  BASE_LR: 1e-4
+  WEIGHT_DECAY: 0.0005
+TEST:
+  BATCH_SIZE: 1
+
+TENSORBOARD:
+  IS_ON: True
+  TARGETS:
+    SCALAR: ["loss", 'distance', 'similarity']
+    IMAGE: ['desc', 'corr', 'corr_false']

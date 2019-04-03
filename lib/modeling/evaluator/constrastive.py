@@ -20,9 +20,9 @@ class ConstrastiveEvaluator(object):
             similarity: similarity between false correspondences
         """
         descs0 = sample_descriptor(descs0, kps0, imgs0)  # [B, N, D]
-        descs1 = sample_descriptor(descs1, kps1, imgs1)  # [B, N, D]
         # descs2 = sample_descriptor(descr_maps1, kps2)
         descs2 = hard_negative_mining(descs0, descs1, kps1, imgs1, thresh, interval)  # [B, N, D]
+        descs1 = sample_descriptor(descs1, kps1, imgs1)  # [B, N, D]
 
         pos_dist = torch.norm(descs0 - descs1, 2, dim=2)
         neg_dist = torch.norm(descs0 - descs2, 2, dim=2)

@@ -94,9 +94,9 @@ class COCO(Dataset):
         img_right = normalize_torch(img_right)
         
         # keypoints
-        kps0 = torch.from_numpy(kps0).long()
-        kps1 = torch.from_numpy(kps1).long()
-        map = torch.from_numpy(map).long()
+        kps0 = torch.from_numpy(kps0).float()
+        kps1 = torch.from_numpy(kps1).float()
+        map = torch.from_numpy(map).float()
         mask = torch.from_numpy(mask.astype(int)).byte()
         
         data = {

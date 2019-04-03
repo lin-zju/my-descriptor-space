@@ -16,7 +16,7 @@ class ModelFactory:
         args = {}
         if 'MSNet' in name:
             # MSNetVx, where x is a number
-            factory = getattr(matcher, name)
+            func = getattr(matcher, name)
             args = {}
         
         return func, args

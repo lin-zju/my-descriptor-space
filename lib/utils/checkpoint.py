@@ -13,19 +13,28 @@ class Checkpointer:
             model,
             optimizer=None,
             scheduler=None,
+            other={},
+            max_checkpoints=10,
             save_dir="",
     ):
+        """
+        :param arguments: other arguments that should be saved
+        :param save_dir:
+            The data will be saved under 'save_dir/'. A file 'checkpoint.pkl'
+            will be created to log all checkpoint files, and checkpoint files
+            are themselves saved in 'save_dir/'
+        """
         self.model = model
         self.optimizer = optimizer
         self.scheduler = scheduler
+        self.other = other
+        self.max_checkpoints = max_checkpoints
         self.save_dir = save_dir
         
-    def save(self, name, **kargs):
+    def save(self, name):
         """
         Save model, optimizer, scheduler and all kargs to "name.pth"
         """
-        if not self.save_dir:
-            return
         
         # save model, optimizer, scheduler and other arguments
         data = {}
@@ -34,8 +43,9 @@ class Checkpointer:
             data['optimizer'] = self.optimizer
         if self.scheduler is not None:
             data['scheduler'] = self.scheduler
+            
         # save any other arguments
-        data.update(kargs)
+        data.update(self.other)
         
         save_file = os.path.join(self.save_dir, '{}.pth'.format(name))
         torch.save(data, save_file)
@@ -64,20 +74,29 @@ class Checkpointer:
             self.scheduler.load_state_dict(checkpoint.pop('scheduler'))
             
         # there might be other arguments to be saved
-        return checkpoint
+        self.other.update(checkpoint)
     
     def has_checkpoint(self):
-        # if there is at least one checkpoint, the file 'last_checkpoint' will
-        # exist
+        """
+        Check whether the 'checkpoint.pkl' file exists
+        :return:
+        """
         save_file = os.path.join(self.save_dir, 'checkpoint.pkl')
         return os.path.exists(save_file)
     
     def get_checkpoint_file(self):
+        """
+        Get the last checkpoint file path.
+        """
         save_file = os.path.join(self.save_dir, 'checkpoint.pkl')
         checkpoints = pickle.load(open(save_file, 'rb'))
         last_saved = os.path.join(self.save_dir, checkpoints[-1])
+        return last_saved
     
     def update_checkpoint(self, last_filename):
+        """
+        Update 'checkpoint.pkl'. We will only keep a number of checkpoints.
+        """
         save_file = os.path.join(self.save_dir, 'checkpoint.pkl')
         if os.path.exists(save_file):
             checkpoints = pickle.load(open(save_file, 'rb'))
@@ -85,7 +104,8 @@ class Checkpointer:
             checkpoints = []
             
         checkpoints.append(os.path.basename(last_filename))
-        if len(checkpoints) > self.cfg.TRAIN.NUM_CHECKPOINT:
+        if len(checkpoints) > self.max_checkpoints:
+            # if number exceeds threshold, pop first file name, delete it.
             checkpoint_name = checkpoints.pop(0)
             checkpoint = os.path.join(self.save_dir, checkpoint_name)
             if os.path.exists(checkpoint) and checkpoint_name not in checkpoints:

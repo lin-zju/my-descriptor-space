@@ -18,8 +18,9 @@ _C.EXP.NAME = 'test'
 # MODEL
 # -----------------------------------------------------------------------------
 _C.MODEL = CN()
+# this specifies the model to use
 _C.MODEL.NAME = "MSNetV0"
-_C.MODEL.TEST = False
+# _C.MODEL.TEST = False
 _C.MODEL.DEVICE = "cpu"
 _C.MODEL.PARALLEL = False
 
@@ -36,9 +37,9 @@ _C.PATH.DATA_DIR = os.path.join(_C.PATH.ROOT_DIR, 'data')
 # DATASET
 # -----------------------------------------------------------------------------
 _C.DATASET = CN()
-_C.DATASET.TRAIN = 'OpenWorldNoDef.train'
-_C.DATASET.VAL = 'OpenWorldNoDef.val'
-_C.DATASET.TEST = 'OpenWorldNoDef.test_mon'
+_C.DATASET.TRAIN = 'COCO.train'
+_C.DATASET.VAL = 'COCO.val'
+_C.DATASET.TEST = 'COCO.test'
 
 # -----------------------------------------------------------------------------
 # DATASET specific
@@ -46,7 +47,8 @@ _C.DATASET.TEST = 'OpenWorldNoDef.test_mon'
 _C.DATASET.COCO = CN()
 _C.DATASET.COCO.WIDTH = 320
 _C.DATASET.COCO.HEIGHT = 240
-_C.DATASET.COCO.KPS = 1000
+# number of keypoints to sample
+_C.DATASET.COCO.KPS = 3000
 
 # -----------------------------------------------------------------------------
 # DataLoader
@@ -60,7 +62,7 @@ _C.DATALOADER.NUM_WORKERS = 4
 # ---------------------------------------------------------------------------- #
 _C.TRAIN = CN()
 
-# resume training?
+# if true, the model, optimizer, schduler will be loaded
 _C.TRAIN.RESUME = True
 
 # number of epochs
@@ -73,20 +75,17 @@ _C.TRAIN.BATCH_SIZE = 128
 _C.TRAIN.BASE_LR = 0.001
 _C.TRAIN.WEIGHT_DECAY = 0.0005
 
-# scheduler, use MultiStepLR as default
-_C.TRAIN.MILESTONES = [10000, 40000, 80000]
-_C.TRAIN.GAMMA = 0.1
-
 _C.TRAIN.CHECKPOINT_PERIOD = 2500
-_C.TRAIN.NUM_CHECKPOINT = 10
+_C.TRAIN.NUM_CHECKPOINTS = 10
+_C.TRAIN.PRINT_EVERY = 20
 
 # ---------------------------------------------------------------------------- #
 # Validation settings
 # ---------------------------------------------------------------------------- #
 _C.VAL = CN()
 
-# resume training?
-_C.VAL.IS_ON = True
+# validation on?
+_C.VAL.IS_ON = False
 _C.VAL.BATCH_SIZE = 1
 
 # ---------------------------------------------------------------------------- #
@@ -111,7 +110,7 @@ _C.TENSORBOARD.LOG_DIR = os.path.join(_C.PATH.ROOT_DIR, "logs")
 # ---------------------------------------------------------------------------- #
 
 # default model saving directory
-_C.MODEL_DIR = os.path.join(_C.PATH.DATA_DIR, "model", _C.EXP.NAME)
+_C.MODEL_DIR = os.path.join(_C.PATH.DATA_DIR, "model")
 
 # ---------------------------------------------------------------------------- #
 # Path setups
