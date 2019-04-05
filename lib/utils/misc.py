@@ -2,6 +2,24 @@ import torch.nn.functional as F
 import cv2
 import torch
 
+def compute_scale(H, h, w):
+    """
+    compute the pixel scale changes after homography transformation
+    H: homography matrix, [[m11, m12, m13], [m21, m22, m23], [m31, m32, m33]]
+    """
+    [[m11, m12, m13], [m21, m22, m23], [m31, m32, m33]] = H
+    yx = np.mgrid[:h, :w]
+    x, y, C = homo_mm(H, yx[1], yx[0])
+    # J: [2, 2, h, w]
+    J = np.array([[m11 * C - m31 * x, m12 * C - m32 * x],
+                 [m21 * C - m31 * y, m22 * C - m32 * y]])
+
+    J /= C ** 2
+    J = J.transpose(2, 3, 0, 1)
+    # scale = np.sqrt(np.linalg.det(J)).astype(np.float32)
+    scale = np.sqrt(np.abs(np.linalg.det(J))).astype(np.float32)
+    return scale
+
 def resize_max_length(img, length):
     """
     Resize an image such that its long edge does not exceed max length.

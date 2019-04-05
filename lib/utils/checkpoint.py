@@ -66,6 +66,7 @@ class Checkpointer:
         
         # load model weight to the model
         self.model.load_state_dict(checkpoint.pop('model'))
+        # self._load_model(checkpoint)
         if 'optimizer' in checkpoint and self.optimizer:
             # if there is a optimizer, load state dict into the optimizer
             print("Loading optimizer from {}".format(f))
@@ -116,10 +117,5 @@ class Checkpointer:
         
     def _load_file(self, f):
         return torch.load(f, map_location=torch.device('cpu'))
-    
-    # def _load_model(self, checkpoint):
-    #     torch.load_state_dict(self.model, checkpoint.pop('model'))
-        
-    
-        
-    
+
+

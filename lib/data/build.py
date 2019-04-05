@@ -1,7 +1,13 @@
 import torch
 from torch.utils.data import DataLoader
-from .factory import DatasetFactory
+from .factory import DatasetFactory, EvaluatorFactory
 from .transforms import transforms as T
+
+def make_evaulator(cfg):
+    factory = EvaluatorFactory(cfg)
+    func, args = factory.get(cfg.TEST.EVALUATOR)
+    
+    return func(**args)
 
 def make_dataloader(cfg, mode):
     # the number of GPUs, or one CPU

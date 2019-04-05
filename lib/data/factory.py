@@ -4,6 +4,7 @@ from lib.config.paths import PATHS
 
 from .datasets.coco import COCO
 from .datasets.hpatches import Hpatches, HpatchesViewpoint, HpatchesIllum
+from .evaluators.pck import DescPckEvaluator
 
 
 class DatasetFactory:
@@ -40,5 +41,25 @@ class DatasetFactory:
             }
             
 
+        return factory, args
+
+class EvaluatorFactory:
+    
+    def __init__(self, cfg):
+        self.cfg = cfg
+    
+    def get(self, name: str):
+        """
+        """
+        factory = None
+        args = {}
+        
+        if name == 'DESC_PCK':
+            factory = DescPckEvaluator
+            args = {
+                'threshold': self.cfg.TEST.PCK_THRESHOLD
+            }
+        
+        
         return factory, args
     

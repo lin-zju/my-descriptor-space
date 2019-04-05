@@ -64,6 +64,12 @@ class MSNetV0(nn.Module):
         descs0 = self.desc_extractor(images0)
         descs1 = self.desc_extractor(images1)
         
+        if targets is None:
+            return dict(
+                descs0=descs0,
+                descs1=descs1
+            )
+        
 
         loss, distance, similarity = self.desc_evaluator(
             descs0, targets['kps0'], images0,
@@ -83,14 +89,15 @@ class MSNetV0(nn.Module):
         # return dict(loss=loss)
         return loss_dict
 
-    def inference(self, images):
+    def inference(self, data):
         """
         :param images: (B, 3, H, W)
         """
+        img0, img1 = data['']
         _, _, h, w = images.size()[-2:]
         descs = self.desc_extractor(images)
         # interpolate and normalize
         descs = F.normalize(F.interpolate(descs, (w, h)), p=2, dim=1)
-        
+
         return descs
 
