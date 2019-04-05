@@ -145,3 +145,6 @@ if not os.path.exists(_C.MODEL_DIR):
 logdir = os.path.join(_C.TENSORBOARD.LOG_DIR, _C.EXP.NAME)
 if os.path.exists(logdir):
     os.system('rm -r {}'.format(logdir))
+    
+import warnings
+warnings.filterwarnings("ignore")

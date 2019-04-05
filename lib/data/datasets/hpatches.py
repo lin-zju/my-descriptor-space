@@ -173,7 +173,7 @@ class HpatchesViewpoint(Hpatches):
         # test and validation split
         # use 95 for validation and 200 for testing
         
-        assert self.mode in ['val', 'test', 'all'], 'Invalid mode {} for hpatches viewpoint.'.format(self.mode)
+        # assert self.mode in ['val', 'test', 'all'], 'Invalid mode {} for hpatches viewpoint.'.format(self.mode)
 
         self.img_paths = sorted([x for x in self.img_paths if '/v' in x[0]])
         random.seed(233)
