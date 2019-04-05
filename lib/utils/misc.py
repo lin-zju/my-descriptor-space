@@ -1,6 +1,14 @@
 import torch.nn.functional as F
 import cv2
 import torch
+import numpy as np
+
+def homo_mm(H, x, y):
+    [[m11, m12, m13], [m21, m22, m23], [m31, m32, m33]] = H
+    C = m31 * x + m32 * y + m33
+    x_prime = m11 * x + m12 * y + m13
+    y_prime = m21 * x + m22 * y + m23
+    return x_prime, y_prime, C
 
 def compute_scale(H, h, w):
     """

@@ -1,14 +1,14 @@
 EXP:
-  NAME: 'superpoint'
+  NAME: 'msnet_v2'
 MODEL:
-  NAME: "SuperPoint"
+  NAME: "MSNetV2"
   DEVICE: "cuda"
   PARALLEL: True
   DEVICE_IDS: []
 DATASET:
   TRAIN: "COCO.train"
   VAL: "HPATCHES_VIEWPOINT.val"
-  TEST: "HPATCHES_VIEWPOINT.all"
+  TEST: "HPATCHES_VIEWPOINT.test"
   COCO:
     WIDTH: 320
     HEIGHT: 240

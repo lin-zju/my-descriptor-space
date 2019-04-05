@@ -1,5 +1,6 @@
 from .msnet_v0 import MSNetV0
 from .msnet_v1 import MSNetV1
+from .msnet_v2 import MSNetV2
 from .superpoint import SuperPoint
 from .daisy import Daisy
 

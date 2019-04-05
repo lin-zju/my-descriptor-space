@@ -15,6 +15,7 @@ from torch.utils.data import Dataset
 from lib.utils.homography import sample_homography, find_map_and_mask, refine_homography
 from lib.utils.keypoint import sample_uniform_keypoints
 from lib.utils.convert import normalize_torch, gray2RGB
+from lib.utils.misc import compute_scale
 
 
 class COCO(Dataset):
@@ -93,15 +94,25 @@ class COCO(Dataset):
         img_left = normalize_torch(img_left)
         img_right = normalize_torch(img_right)
         
+        # scale
+        right_scale = compute_scale(np.linalg.inv(H), h1, w1)
+        right_scale = 1.0 / right_scale
+        left_scale = compute_scale(H, h0, w0)
+        left_scale = 1.0 / left_scale
+        
         # keypoints
         kps0 = torch.from_numpy(kps0).float()
         kps1 = torch.from_numpy(kps1).float()
         map = torch.from_numpy(map).float()
         mask = torch.from_numpy(mask.astype(int)).byte()
+        left_scale = torch.from_numpy(left_scale).float()
+        right_scale = torch.from_numpy(right_scale).float()
         
         data = {
             'img0': img_left,
             'img1': img_right,
+            'left_scale': left_scale,
+            'right_scale': right_scale,
         }
         targets = {
             'kps0': kps0,

@@ -16,7 +16,7 @@ from torch.utils.data import Dataset
 from lib.utils.homography import sample_homography, find_map_and_mask, refine_homography
 from lib.utils.keypoint import sample_uniform_keypoints, sample_harris_keypoints
 from lib.utils.convert import normalize_torch, gray2RGB
-from lib.utils.misc import resize_max_length
+from lib.utils.misc import resize_max_length, compute_scale
 
 
 class Hpatches(Dataset):
@@ -81,15 +81,25 @@ class Hpatches(Dataset):
         img0 = normalize_torch(img0)
         img1 = normalize_torch(img1)
         
+        # compute relative scale
+        right_scale = compute_scale(np.linalg.inv(H), h1, w1)
+        right_scale = 1.0 / right_scale
+        left_scale = compute_scale(H, h0, w0)
+        left_scale = 1.0 / left_scale
+        
         # keypoints
         kps0 = torch.from_numpy(kps0).float()
         kps1 = torch.from_numpy(kps1).float()
         map = torch.from_numpy(map).float()
         mask = torch.from_numpy(mask.astype(int)).byte()
+        left_scale = torch.from_numpy(left_scale).float()
+        right_scale = torch.from_numpy(right_scale).float()
         
         data = {
             'img0': img0,
             'img1': img1,
+            'left_scale': left_scale,
+            'right_scale': right_scale
         }
         targets = {
             'kps0': kps0,
