@@ -81,7 +81,7 @@ We provide code for comparing three basic descriptors:
 
 * `MSNetV0`, our baseline network
 * [`SuperPoint`](https://github.com/MagicLeapResearch/SuperPointPretrainedNetwork)
-* `DAISY`
+* [`DAISY`](https://github.com/etola/libdaisy)
 
 To test these on hpatches viewpoint dataset, run the following respectively:
 
