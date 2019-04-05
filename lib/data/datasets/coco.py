@@ -134,8 +134,8 @@ class COCO(Dataset):
 if __name__ == '__main__':
     import matplotlib.pyplot as plt
     from lib.utils.convert import tonumpyimg, tonumpy
-    from lib.utils.keypoint import draw_match
-    
+    from lib.utils.visualize import draw_match
+
     ds = COCO('data/MSCOCO2017')
     for data, targets in ds:
         left, right = data['img0'], data['img1']

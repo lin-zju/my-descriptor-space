@@ -50,6 +50,11 @@ _C.DATASET.COCO.HEIGHT = 240
 # number of keypoints to sample
 _C.DATASET.COCO.KPS = 3000
 
+_C.DATASET.HPATCHES = CN()
+_C.DATASET.HPATCHES.SIZE = 640
+# number of keypoints to sample
+_C.DATASET.HPATCHES.KPS = 1000
+
 # -----------------------------------------------------------------------------
 # DataLoader
 # -----------------------------------------------------------------------------
@@ -111,6 +116,11 @@ _C.TENSORBOARD.LOG_DIR = os.path.join(_C.PATH.ROOT_DIR, "logs")
 
 # default model saving directory
 _C.MODEL_DIR = os.path.join(_C.PATH.DATA_DIR, "model")
+# visualization getter
+_C.GETTER = CN()
+_C.GETTER.NAME = 'MSNet'
+
+
 
 # ---------------------------------------------------------------------------- #
 # Path setups

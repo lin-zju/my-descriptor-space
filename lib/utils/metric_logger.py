@@ -55,6 +55,13 @@ class MetricLogger:
                 v = v.item()
             assert isinstance(v, (float, int))
             self.meters[k].update(v)
+
+    def state_dict(self, target=None):
+        metric_dict = {}
+        target_keys = self.meters.keys() if target is None else target
+        for t in target_keys:
+            metric_dict[t] = self.meters[t].median
+        return metric_dict
     
     def __getattr__(self, attr):
         if attr in self.meters:

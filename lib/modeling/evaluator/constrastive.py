@@ -2,6 +2,7 @@ import torch
 
 from lib.utils.misc import sample_descriptor
 from lib.utils.hard_mining.hard_example_mining_layer import hard_negative_mining
+from lib.utils.vis_logger import logger
 
 
 class ConstrastiveEvaluator(object):
@@ -11,7 +12,7 @@ class ConstrastiveEvaluator(object):
         
         :param descs0 descs1: (B, D, H', W'), downsampled
         :param kps0, kps1: (B, N, 2), original image scale
-        :param imgs0, imgs1: (B, 3, H, W0 (B, 3, H, W0 (B, 3, H, W0 (B, 3, H, W0)
+        :param imgs0, imgs1: (B, 3, H, W)
         :param thresh: mining threshold. NOTE, this is measure at descritpor map scale
         :param interval: mining interval. NOTE, this is measure at descritpor map scale
         :return:
@@ -21,7 +22,8 @@ class ConstrastiveEvaluator(object):
         """
         descs0 = sample_descriptor(descs0, kps0, imgs0)  # [B, N, D]
         # descs2 = sample_descriptor(descr_maps1, kps2)
-        descs2 = hard_negative_mining(descs0, descs1, kps1, imgs1, thresh, interval)  # [B, N, D]
+        descs2, kps2 = hard_negative_mining(descs0, descs1, kps1, imgs1, thresh, interval)  # [B, N, D]
+        logger.update(kps2=kps2[0])
         descs1 = sample_descriptor(descs1, kps1, imgs1)  # [B, N, D]
 
         pos_dist = torch.norm(descs0 - descs1, 2, dim=2)

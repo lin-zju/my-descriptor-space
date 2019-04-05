@@ -3,6 +3,7 @@ from lib.config.paths import PATHS
 # from .datasets.df import OpenWorldNoDef
 
 from .datasets.coco import COCO
+from .datasets.hpatches import Hpatches, HpatchesViewpoint, HpatchesIllum
 
 
 class DatasetFactory:
@@ -26,6 +27,18 @@ class DatasetFactory:
                 'num_kps': self.cfg.DATASET.COCO.KPS,
                 'size': (self.cfg.DATASET.COCO.HEIGHT, self.cfg.DATASET.COCO.WIDTH)
             }
+        elif 'HPATCHES' in name:
+            factory = {
+                'HPATCHES': Hpatches,
+                'HPATCHES_VIEWPOINT': HpatchesViewpoint,
+                'HPATCHES_ILLUM': HpatchesIllum
+            }[name]
+            args = {
+                'root': PATHS['HPATCHES']['root'],
+                'size': self.cfg.DATASET.HPATCHES.SIZE,
+                'num_kps': self.cfg.DATASET.HPATCHES.KPS,
+            }
+            
 
         return factory, args
     

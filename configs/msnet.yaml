@@ -13,9 +13,10 @@ DATASET:
     HEIGHT: 240
     KPS: 3000
 TRAIN:
+  RESUME: True
   CHECKPOINT_PERIOD: 1000
-  BATCH_SIZE: 4
-  MAX_EPOCHS: 10
+  BATCH_SIZE: 1
+  MAX_EPOCHS: 1
   BASE_LR: 1e-4
   WEIGHT_DECAY: 0.0005
 TEST:
@@ -25,4 +26,4 @@ TENSORBOARD:
   IS_ON: True
   TARGETS:
     SCALAR: ["loss", 'distance', 'similarity']
-    IMAGE: ['desc', 'corr', 'corr_false']
+    IMAGE: ['imgs', 'descs', 'corr', 'corr_false']

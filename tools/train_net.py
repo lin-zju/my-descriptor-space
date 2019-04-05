@@ -13,6 +13,8 @@ from lib.solver import make_optimizer, make_scheduler
 from lib.engine.trainer import train
 from lib.engine.evaluator import evaluate
 from lib.utils.checkpoint import Checkpointer
+from lib.utils.tensorboard import TensorBoard
+from lib.utils.vis_logger import make_getter
 from lib.config import cfg
 
 
@@ -41,10 +43,23 @@ def train_net(cfg):
         scheduler=scheduler,
         other=arguments,
         max_checkpoints=cfg.TRAIN.NUM_CHECKPOINTS,
-        save_dir=cfg.MODEL_DIR
+        save_dir=save_dir
     )
     if cfg.TRAIN.RESUME:
         checkpointer.load()
+        
+    # tensorboard and visualization
+    tensorboard = None
+    getter = None
+    logdir = os.path.join(cfg.TENSORBOARD.LOG_DIR, cfg.EXP.NAME)
+    if cfg.TENSORBOARD.IS_ON:
+        tensorboard = TensorBoard(
+            logdir=logdir,
+            scalars=cfg.TENSORBOARD.TARGETS.SCALAR,
+            images=cfg.TENSORBOARD.TARGETS.IMAGE,
+            resume=cfg.TRAIN.RESUME
+        )
+        getter = make_getter(cfg)
     
     # training parameters
     params = {
@@ -62,6 +77,8 @@ def train_net(cfg):
         device,
         arguments,
         params,
+        tensorboard,
+        getter
     )
     
     return model

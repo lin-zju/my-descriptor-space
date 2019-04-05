@@ -30,6 +30,8 @@ class Checkpointer:
         self.other = other
         self.max_checkpoints = max_checkpoints
         self.save_dir = save_dir
+        if not os.path.exists(self.save_dir):
+            os.mkdir(save_dir)
         
     def save(self, name):
         """
@@ -40,9 +42,9 @@ class Checkpointer:
         data = {}
         data['model'] = self.model.state_dict()
         if self.optimizer is not None:
-            data['optimizer'] = self.optimizer
+            data['optimizer'] = self.optimizer.state_dict()
         if self.scheduler is not None:
-            data['scheduler'] = self.scheduler
+            data['scheduler'] = self.scheduler.state_dict()
             
         # save any other arguments
         data.update(self.other)
@@ -63,7 +65,7 @@ class Checkpointer:
         checkpoint = self._load_file(f)
         
         # load model weight to the model
-        self._load_model(checkpoint)
+        self.model.load_state_dict(checkpoint.pop('model'))
         if 'optimizer' in checkpoint and self.optimizer:
             # if there is a optimizer, load state dict into the optimizer
             print("Loading optimizer from {}".format(f))
@@ -115,8 +117,8 @@ class Checkpointer:
     def _load_file(self, f):
         return torch.load(f, map_location=torch.device('cpu'))
     
-    def _load_model(self, checkpoint):
-        torch.load_state_dict(self.model, checkpoint.pop('model'))
+    # def _load_model(self, checkpoint):
+    #     torch.load_state_dict(self.model, checkpoint.pop('model'))
         
     
         

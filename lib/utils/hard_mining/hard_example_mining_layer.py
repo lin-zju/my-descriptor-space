@@ -22,15 +22,12 @@ def hard_negative_mining(desc_seeds, desc_maps, kps, images, thresh=16, interval
 
         # hard negative mining
         neg_kps = hard_example_mining_layer(desc_maps, desc_seeds, kps, thresh, interval).float()  # [B, N, 3]
-        tmp = neg_kps.clone()
         neg_kps = neg_kps[:, :, 1:]
         neg_kps /= ratio
+        tmp = neg_kps.clone()
 
     descs = sample_descriptor(desc_maps, neg_kps, images)
-    # tmp1 = neg_kps.clone()
-    # neg_kps = tmp.long()
-    # tmp = desc_maps[neg_kps[:, :, 0], :, neg_kps[:, :, 2], neg_kps[:, :, 1]]
-    return descs
+    return descs, tmp
 
 def hard_example_mining_layer(feats,feats_ref,gt_loc,interval=32,thresh=8):
     '''

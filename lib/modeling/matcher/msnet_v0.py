@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 from lib.modeling.backbone.resnet import MultiResNet, resnet18
 from lib.modeling.evaluator.constrastive import ConstrastiveEvaluator
-# from lib.utils.logger import logger
+from lib.utils.vis_logger import logger
 # from lib.utils.visualize import draw_paired_img_desc_torch
 
 
@@ -67,21 +67,20 @@ class MSNetV0(nn.Module):
 
         loss, distance, similarity = self.desc_evaluator(
             descs0, targets['kps0'], images0,
-            descs1, targets['kps1'], images1
+            descs1, targets['kps1'], images1,
+            thresh=4, interval=4
         )
         
         loss_dict = dict(loss=loss, distance=distance, similarity=similarity)
 
         # keep descriptors for visualization
-        # logger.update(image0=images0[0], image1=images1[0])
-        # logger.update(kps0=targets['kps0'][0], kps1=targets['kps1'][0])
-        # logger.update(d03=descs0['d3'][0], d13=descs1['d3'][0])
+        logger.update(image0=images0[0], image1=images1[0])
+        logger.update(kps0=targets['kps0'][0], kps1=targets['kps1'][0])
+        logger.update(descs0=descs0[0], descs1=descs1[0])
+        # logger.update(**loss_dict)
         # logger.update(H=targets['H'][0])
 
-        # results = dict(
-        #     descs0=descs0,
-        #     descs1=descs1
-        # )
+        # return dict(loss=loss)
         return loss_dict
 
     def inference(self, images):

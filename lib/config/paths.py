@@ -8,6 +8,9 @@ import os
 PATHS = {
     'COCO': {
         'root': 'data/MSCOCO2017'
+    },
+    'HPATCHES': {
+        'root': 'data/HPATCHES'
     }
 }
 

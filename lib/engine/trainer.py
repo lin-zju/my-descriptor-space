@@ -17,6 +17,8 @@ def train(
     device,
     checkpoint_arguments,
     params,
+    tensorboard,
+    getter,
     
     dataloader_val=None,
     evaluator=None
@@ -66,6 +68,7 @@ def train(
             # time used for loading data
             data_time = time.time() - end
             iteration = iteration + 1
+            globel_step = epoch * len(data_loader) + iteration
             
             # iteration should be kept in the checkpointer
             checkpoint_arguments['iteration'] = iteration
@@ -84,7 +87,8 @@ def train(
             
             # sum all losses for bp
             meters.update(**loss_dict)
-            loss = sum(loss for loss in loss_dict.values())
+            # loss = sum(loss for loss in loss_dict.values())
+            loss = loss_dict['loss']
             
             optimizer.zero_grad()
             loss.backward()
@@ -119,6 +123,14 @@ def train(
                         memory=torch.cuda.max_memory_allocated() / 1024.0 / 1024.0
                     )
                 )
+                
+                tb_data = getter.get_tensorboard_data()
+                if not tensorboard is None:
+                    metric_dict = meters.state_dict()
+                    tensorboard.update(**metric_dict)
+                    tensorboard.update(**tb_data)
+                    tensorboard.add('train', globel_step)
+                    
                 
             # save model, optimizer, scheduler, and other arguments
             if iteration % checkpoint_period == 0:
