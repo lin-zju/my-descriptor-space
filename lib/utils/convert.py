@@ -172,7 +172,7 @@ def RGB2BGR(*imgs):
 def unnormalize(img, mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]):
     """
     Convert a normalized tensor image to unnormalized form
-    :param img: (C, H, W)
+    :param img: (B, C, H, W)
     """
     img = img.detach().cpu()
     img *= torch.tensor(std).view(3, 1, 1)

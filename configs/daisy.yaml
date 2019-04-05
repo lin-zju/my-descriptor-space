@@ -1,7 +1,7 @@
 EXP:
-  NAME: 'msnet_v1'
+  NAME: 'daisy'
 MODEL:
-  NAME: "MSNetV1"
+  NAME: 'Daisy'
   DEVICE: "cuda"
   PARALLEL: True
   DEVICE_IDS: []

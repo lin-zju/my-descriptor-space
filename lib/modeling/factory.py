@@ -18,6 +18,12 @@ class ModelFactory:
             # MSNetVx, where x is a number
             func = getattr(matcher, name)
             args = {}
+        elif 'SuperPoint' in name:
+            func = getattr(matcher, name)
+            args = {}
+        elif 'Daisy' in name:
+            func = getattr(matcher, name)
+            args = {}
         
         return func, args
 
