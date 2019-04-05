@@ -42,6 +42,7 @@ def train(
     max_epochs = params['max_epochs']
     checkpoint_period = params['checkpoint_period']
     print_every = params['print_every']
+    val_every = params['val_every']
     max_iter = max_epochs * len(data_loader)
 
     # metric logger
@@ -55,7 +56,6 @@ def train(
 
     first = True
     for epoch in range(start_epoch, max_epochs):
-        checkpoint_arguments['epoch'] = epoch
         model.train()
         
         # starting from where we drop
@@ -70,8 +70,6 @@ def train(
             iteration = iteration + 1
             globel_step = epoch * len(data_loader) + iteration
             
-            # iteration should be kept in the checkpointer
-            checkpoint_arguments['iteration'] = iteration
             
             # step learning rate scheduler
             if scheduler:
@@ -84,6 +82,9 @@ def train(
             
             # get losses
             loss_dict = model(data, targets)
+            
+            # reduce loss dictionary
+            loss_dict = {k: torch.mean(v) for k, v in loss_dict.items()}
             
             # sum all losses for bp
             meters.update(**loss_dict)
@@ -134,12 +135,19 @@ def train(
                 
             # save model, optimizer, scheduler, and other arguments
             if iteration % checkpoint_period == 0:
+                checkpoint_arguments['epoch'] = epoch
+                # iteration should be kept in the checkpointer
+                checkpoint_arguments['iteration'] = iteration
                 checkpointer.save("model_{:05d}_{:07d}".format(epoch, iteration))
                 
-        # evaluate result after each epoch
-        if not evaluator is None and not dataloader_val is None:
-            results = evaluate(model, device, dataloader_val, evaluator)
-            print(**results)
+            # evaluate result after each epoch
+            if not evaluator is None and not dataloader_val is None and globel_step % val_every == 0:
+                result = evaluate(model, device, dataloader_val, evaluator)
+                print('Validation result: ', result)
+                if tensorboard:
+                    tensorboard.update(val_result=result)
+                # NOTE: back to train mode!
+                model.train()
             
             
             

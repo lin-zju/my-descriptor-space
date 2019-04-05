@@ -23,6 +23,7 @@ _C.MODEL.NAME = "MSNetV0"
 # _C.MODEL.TEST = False
 _C.MODEL.DEVICE = "cpu"
 _C.MODEL.PARALLEL = False
+_C.MODEL.DEVICE_IDS = []
 
 # -----------------------------------------------------------------------------
 # PATH SETTING
@@ -38,8 +39,8 @@ _C.PATH.DATA_DIR = os.path.join(_C.PATH.ROOT_DIR, 'data')
 # -----------------------------------------------------------------------------
 _C.DATASET = CN()
 _C.DATASET.TRAIN = 'COCO.train'
-_C.DATASET.VAL = 'COCO.val'
-_C.DATASET.TEST = 'COCO.test'
+_C.DATASET.VAL = 'HPATCHES_VIEWPOINT.val'
+_C.DATASET.TEST = 'HPATCHES_VIEWPOINT.test'
 
 # -----------------------------------------------------------------------------
 # DATASET specific
@@ -83,6 +84,8 @@ _C.TRAIN.WEIGHT_DECAY = 0.0005
 _C.TRAIN.CHECKPOINT_PERIOD = 2500
 _C.TRAIN.NUM_CHECKPOINTS = 10
 _C.TRAIN.PRINT_EVERY = 20
+# validate per ? iterations
+_C.TRAIN.VAL_EVERY = 1000
 
 # ---------------------------------------------------------------------------- #
 # Validation settings
@@ -92,6 +95,8 @@ _C.VAL = CN()
 # validation on?
 _C.VAL.IS_ON = False
 _C.VAL.BATCH_SIZE = 1
+_C.VAL.EVALUATOR = 'DESC_PCK'
+_C.VAL.PCK_THRESHOLD = 5
 
 # ---------------------------------------------------------------------------- #
 # Specific test options
@@ -135,3 +140,8 @@ if _C.PATH.ROOT_DIR not in sys.path:
 
 if not os.path.exists(_C.MODEL_DIR):
     os.makedirs(_C.MODEL_DIR)
+    
+# clear log is not resume
+logdir = os.path.join(_C.TENSORBOARD.LOG_DIR, _C.EXP.NAME)
+if os.path.exists(logdir):
+    os.system('rm -r {}'.format(logdir))

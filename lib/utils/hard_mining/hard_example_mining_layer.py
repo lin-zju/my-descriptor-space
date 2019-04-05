@@ -16,9 +16,10 @@ def hard_negative_mining(desc_seeds, desc_maps, kps, images, thresh=16, interval
         # rescale the kps to the size of desc_map
         ratio_h = desc_maps.shape[2] / images.shape[2]
         ratio_w = desc_maps.shape[3] / images.shape[3]
-        ratio = torch.tensor([ratio_w, ratio_h]).cuda()
-        kps = kps.clone().detach()
-        kps *= ratio
+        ratio = torch.tensor([ratio_w, ratio_h]).to(kps.device)
+        # kps = kps.clone().detach()
+        # kps *= ratio.to(kps.device)
+        kps = kps * ratio
 
         # hard negative mining
         neg_kps = hard_example_mining_layer(desc_maps, desc_seeds, kps, thresh, interval).float()  # [B, N, 3]

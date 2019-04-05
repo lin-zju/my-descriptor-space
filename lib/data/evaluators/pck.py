@@ -39,43 +39,17 @@ class DescPckEvaluator(Evaluator):
 
         if len(descs0.shape) == 5:
             # set to set match
-            x1 = sample_descriptor(descs0[0], kps0, image0)[0]
-            x2 = sample_descriptor(descs0[1], kps0, image0)[0]
+            x1 = sample_descriptor(descs0[:, 0], kps0, image0)[0]
+            x2 = sample_descriptor(descs0[:, 1], kps0, image0)[0]
             descs0 = torch.stack([x1, x2], dim=1)
     
-            x1 = sample_descriptor(descs1[0], kps1, image1)[0]
-            x2 = sample_descriptor(descs1[1], kps1, image1)[0]
+            x1 = sample_descriptor(descs1[:, 0], kps1, image1)[0]
+            x2 = sample_descriptor(descs1[:, 1], kps1, image1)[0]
             descs1 = torch.stack([x1, x2], dim=1)
         else:
             descs0 = sample_descriptor(descs0, kps0, image0)[0].numpy()
             descs1 = sample_descriptor(descs1, kps1, image1)[0].numpy()
 
-        # Visualization
-        # def tonumpy(*args):
-        #     return [x.detach().cpu().numpy() if isinstance(x, torch.Tensor) else x for x in args]
-        # [kps0, kps1, H] = tonumpy(kps0, kps1, H)
-        # self.vis(image0, image1, desc0, desc1, descs0, descs1, kps0, kps1, H)
-
-        # pck = compute_pck(descs0, kps0, descs1, kps1)
-        # print(pck)
-        # if pck < 1:
-        #     h, w = image1.shape[1:]
-        #     scale = compute_scale(H.detach().cpu().numpy(), h, w)
-        #     img0 = draw_img_desc_torch(image0, desc0)
-        #     img1 = draw_img_desc_torch(image1, desc1)
-        #     img = np.concatenate([img0, img1], axis=0)
-        #
-        #     import matplotlib.pyplot as plt
-        #     _, (ax1, ax2, ax3) = plt.subplots(1, 3)
-        #     ax1.imshow(img)
-        #     ax2.hist(scale[kps0[:, 1].long().numpy(), kps0[:, 0].long().numpy()], bins=100)
-        #
-        #     # scales = get_wrong_pixel_scale(descs1, kps1, descs0, kps0, image1, torch.tensor(np.linalg.inv(H)))
-        #     scales = get_wrong_pixel_scale(descs0, kps0, descs1, kps1, image0, H)
-        #     print(len(scales[scales < 0.75]))
-        #     print(len(scales[scales > 1.5]))
-        #     ax3.hist(scales, bins=100)
-        #     plt.show()
 
         # self.scales.append(get_wrong_pixel_scale(descs0, kps0, descs1, kps1, image0, H))
         self.pck.append(compute_pck(descs0, kps0[0], descs1, kps1[0]))
@@ -95,51 +69,6 @@ class DescPckEvaluator(Evaluator):
         plt.hist(np.concatenate(self.scales), bins=100, range=(0, 2))
         plt.show()
 
-    # def vis(self, image0, image1, desc0, desc1, descs0, descs1, kps0, kps1, H):
-    #
-    #     h, w = image1.shape[1:]
-    #
-    #     # H = H.detach().cpu().numpy()
-    #     scale = compute_scale(H, h, w)
-    #     img0 = draw_img_desc_torch(image0, desc0)
-    #     img1 = draw_img_desc_torch(image1, desc1)
-    #     img = np.concatenate([img0, img1], axis=0)
-    #
-    #     import matplotlib.pyplot as plt
-    #     _, ((ax1, ax2), (ax3, ax4), (ax5, ax6)) = plt.subplots(3, 2)
-    #     ax1.imshow(img)
-    #     ax2.hist(scale[kps0[:, 1].astype(np.int), kps0[:, 0].astype(np.int)], bins=100)
-    #     ax2.set_ylim((0, 100))
-    #
-    #     # scales = get_wrong_pixel_scale(descs0, kps0, descs1, kps1, image0, H)
-    #     scales, pix_wrong = get_wrong_pixel_scale(descs0, kps0, descs1, kps1, image1, H)
-    #     ax3.hist(scales, bins=100)
-    #     ax3.set_ylim((0, 100))
-    #     print('<0.75: {}'.format(sum(scales < 0.75)))
-    #     print('>1.5: {}'.format(sum(scales > 1.5)))
-    #
-    #     # show wrong and right pixel positions
-    #     # mask of all, wrong, right pixels
-    #     mask_all = np.zeros((h, w), dtype=np.bool)
-    #     mask_all[kps0[:, 1].astype(np.int), kps0[:, 0].astype(np.int)] = True
-    #     mask_right = mask_all.copy()
-    #     mask_right[pix_wrong[:, 1], pix_wrong[:, 0]] = False
-    #     mask_wrong = mask_all ^ mask_right
-    #
-    #     # maps
-    #     map_right = np.zeros((h, w), dtype=np.uint8)
-    #     map_right[mask_right] = 255
-    #     ax4.imshow(map_right, cmap='gray')
-    #
-    #     map_wrong = np.zeros((h, w), dtype=np.uint8)
-    #     map_wrong[mask_wrong] = 255
-    #     ax5.imshow(map_wrong, cmap='gray')
-    #
-    #     map_all = np.zeros((h, w), dtype=np.uint8)
-    #     map_all[mask_all] = 255
-    #     ax6.imshow(map_all, cmap='gray')
-    #
-    #     plt.show()
 
 def keep_valid_keypoints(keypoints, H, height, width):
     """

@@ -22,12 +22,14 @@ def test_net(cfg):
     # model
     device = torch.device(cfg.MODEL.DEVICE)
     model = make_model(cfg)
+    device_ids = cfg.MODEL.DEVICE_IDS
+    if not device_ids: device_ids = None # use all devices
     if cfg.MODEL.PARALLEL:
-        model = torch.nn.DataParallel(model)
+        model = torch.nn.DataParallel(model, device_ids=device_ids)
     # model = model.to(device)
     
     dataloader = make_dataloader(cfg, mode='test')
-    evaluator = make_evaulator(cfg)
+    evaluator = make_evaulator(cfg, 'test')
     
     # checkpointer
     save_dir = os.path.join(cfg.MODEL_DIR, cfg.EXP.NAME)

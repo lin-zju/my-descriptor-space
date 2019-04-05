@@ -1,13 +1,14 @@
 EXP:
-  NAME: 'test'
+  NAME: 'msnet_v0'
 MODEL:
   NAME: "MSNetV0"
   DEVICE: "cuda"
   PARALLEL: True
+  DEVICE_IDS: []
 DATASET:
   TRAIN: "COCO.train"
-  TEST: "HPATCHES_VIEWPOINT"
-  VAL: "COCO.test"
+  VAL: "HPATCHES_VIEWPOINT.val"
+  TEST: "HPATCHES_VIEWPOINT.test"
   COCO:
     WIDTH: 320
     HEIGHT: 240
@@ -19,16 +20,22 @@ TRAIN:
   RESUME: True
   CHECKPOINT_PERIOD: 1000
   BATCH_SIZE: 1
-  MAX_EPOCHS: 2
+  MAX_EPOCHS: 3
   BASE_LR: 1e-4
   WEIGHT_DECAY: 0.0005
+  VAL_EVERY: 1000
 TEST:
   BATCH_SIZE: 1
   PCK_THRESHOLD: 5
   EVALUATOR: 'DESC_PCK'
+VAL:
+  IS_ON: True
+  BATCH_SIZE: 1
+  EVALUATOR: 'DESC_PCK'
+  PCK_THRESHOLD: 5
 
 TENSORBOARD:
   IS_ON: True
   TARGETS:
-    SCALAR: ["loss", 'distance', 'similarity']
+    SCALAR: ["loss", 'distance', 'similarity', 'val_result']
     IMAGE: ['imgs', 'descs', 'corr', 'corr_false']

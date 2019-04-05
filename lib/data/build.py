@@ -3,16 +3,21 @@ from torch.utils.data import DataLoader
 from .factory import DatasetFactory, EvaluatorFactory
 from .transforms import transforms as T
 
-def make_evaulator(cfg):
+def make_evaulator(cfg, mode):
     factory = EvaluatorFactory(cfg)
-    func, args = factory.get(cfg.TEST.EVALUATOR)
+    
+    func, args = None, None
+    if mode == 'test':
+        func, args = factory.get(cfg.TEST.EVALUATOR)
+    elif mode == 'val':
+        func, args = factory.get(cfg.VAL.EVALUATOR)
     
     return func(**args)
 
 def make_dataloader(cfg, mode):
     # the number of GPUs, or one CPU
-    num_gpus = int(torch.cuda.device_count()) \
-        if torch.cuda.is_available() else 1
+    # num_gpus = int(torch.cuda.device_count()) \
+    #     if torch.cuda.is_available() else 1
     
     # test or train mode setting
     if mode == 'train':
@@ -25,14 +30,14 @@ def make_dataloader(cfg, mode):
         batch_size = cfg.TEST.BATCH_SIZE
         shuffle = False
         
-    assert batch_size % num_gpus == 0,\
-        'Batch size ({}) must be divisble by the number of GPUs ({})'.format(
-            batch_size, num_gpus)
+    # assert batch_size % num_gpus == 0,\
+    #     'Batch size ({}) must be divisble by the number of GPUs ({})'.format(
+    #         batch_size, num_gpus)
         
     # build dataset
     dataset = make_dataset(cfg, mode)
     num_workers = cfg.DATALOADER.NUM_WORKERS
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
     
     return dataloader
     
@@ -53,10 +58,10 @@ def make_transforms(cfg, is_train):
     if is_train is True:
         transform = T.Compose(
             [
-                # T.JpegCompress(),
-                # T.GaussianBlur(),
-                # T.AddNoise(),
-                # T.Jitter(),
+                T.JpegCompress(),
+                T.GaussianBlur(),
+                T.AddNoise(),
+                T.Jitter(),
                 # T.ToTensor(),
                 # T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
             ]

@@ -26,15 +26,23 @@ class DescExtractor(nn.Module):
         Descriptor from feature
         :param feats: (B, D, H, W)
         """
-        descs = self.backbone(feats)['C3']
+        feats = self.backbone(feats)['C3']
+        _, _, h, w = feats.size()
 
-        descs = F.normalize(self.regress(descs), p=2, dim=1)
+        descs = F.normalize(self.regress(feats), p=2, dim=1)
+        
+        feats_down = F.interpolate(feats, scale_factor=0.5, mode='bilinear')
+        down_descs = F.interpolate(self.regress(feats_down), (h, w), mode='bilinear', align_corners=False)
+
+        # (B, 2, D, H ,W)
+        descs = torch.stack([descs, down_descs], dim=1)
+
 
         return descs
 
 
 
-class MSNetV0(nn.Module):
+class MSNetV1(nn.Module):
     """
     Simple descritpor network without any feature. The features are extracted
     directly from C3 layer
@@ -70,10 +78,10 @@ class MSNetV0(nn.Module):
                 descs1=descs1
             )
         
-
+        # note, only the original sized descriptor is used for hard mining
         loss, distance, similarity = self.desc_evaluator(
-            descs0, targets['kps0'], images0,
-            descs1, targets['kps1'], images1,
+            descs0[:, 0], targets['kps0'], images0,
+            descs1[:, 0], targets['kps1'], images1,
             thresh=4, interval=4
         )
         
@@ -82,7 +90,7 @@ class MSNetV0(nn.Module):
         # keep descriptors for visualization
         logger.update(image0=images0[0], image1=images1[0])
         logger.update(kps0=targets['kps0'][0], kps1=targets['kps1'][0])
-        logger.update(descs0=descs0[0], descs1=descs1[0])
+        logger.update(descs0=descs0[0][0], descs1=descs1[0][0])
         # logger.update(**loss_dict)
         # logger.update(H=targets['H'][0])
 

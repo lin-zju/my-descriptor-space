@@ -29,6 +29,7 @@ class DatasetFactory:
                 'size': (self.cfg.DATASET.COCO.HEIGHT, self.cfg.DATASET.COCO.WIDTH)
             }
         elif 'HPATCHES' in name:
+            name, _, mode = name.partition('.')
             factory = {
                 'HPATCHES': Hpatches,
                 'HPATCHES_VIEWPOINT': HpatchesViewpoint,
@@ -38,6 +39,7 @@ class DatasetFactory:
                 'root': PATHS['HPATCHES']['root'],
                 'size': self.cfg.DATASET.HPATCHES.SIZE,
                 'num_kps': self.cfg.DATASET.HPATCHES.KPS,
+                'mode': mode
             }
             
 

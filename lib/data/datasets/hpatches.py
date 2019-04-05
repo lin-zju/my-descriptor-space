@@ -6,6 +6,7 @@ The images are resized to 240x320
 
 """
 import torch
+import random
 import glob
 import os
 import numpy as np
@@ -19,14 +20,16 @@ from lib.utils.misc import resize_max_length
 
 
 class Hpatches(Dataset):
-    def __init__(self, root, transforms=None, size=640, num_kps=1000):
+    def __init__(self, root, mode, transforms=None, size=640, num_kps=1000):
         """
+        :param mode: either 'test' or 'val'
         """
         Dataset.__init__(self)
         self.img_paths = self.get_img_paths(root)
         self.transforms = transforms
         self.size = size
         self.num_kps = num_kps
+        self.mode = mode
     
     def __getitem__(self, index):
         """
@@ -157,7 +160,22 @@ class HpatchesViewpoint(Hpatches):
     def __init__(self, *args, **kargs):
         Hpatches.__init__(self, *args, **kargs)
         # only viewpoint changes
-        self.img_paths = [x for x in self.img_paths if '/v' in x[0]][20:]
+        # test and validation split
+        # use 95 for validation and 200 for testing
+        
+        assert self.mode in ['val', 'test', 'all'], 'Invalid mode {} for hpatches viewpoint.'.format(self.mode)
+
+        self.img_paths = sorted([x for x in self.img_paths if '/v' in x[0]])
+        random.seed(233)
+        random.shuffle(self.img_paths)
+        if self.mode == 'val':
+            self.img_paths = self.img_paths[:95]
+        elif self.mode == 'test':
+            self.img_paths = self.img_paths[95:]
+        elif self.mode == 'all':
+            pass
+            
+        
 
 class HpatchesIllum(Hpatches):
     def __init__(self, *args, **kargs):
