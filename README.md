@@ -1,6 +1,6 @@
 # Descriptor Space
 
-Dense visual descriptor learning for wide-baseline matching, using the idea of "descriptor space". This project is still undergoing and some code can _not_ be made public. Here we only release the baseline code, and some current results, which are already promising.
+Dense visual descriptor learning for wide-baseline matching, using the idea of "descriptor space". This project is still undergoing and some code can _not_ be made public. Here we only release the baseline code, and some current results. The project organization was inspired by [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark).
 
 ## Introduction
 
