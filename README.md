@@ -1,12 +1,12 @@
 # Descriptor Space
 
-Dense visual descriptor learning for wide-baseline matching, using the idea of "descriptor space". This project is still undergoing and some code can _not_ be made public. Here we only release the baseline code, and some current results. The project organization was inspired by [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark).
+Dense visual descriptor learning for wide-baseline matching, using the idea of "descriptor space". The project organization was inspired by [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark).
 
 ## Introduction
 
 Visual descriptor is an important topic in computer vision. For establishing robust correspondences between images, the extracted descriptors should be invariant to changes like illumination, viewpoint and scale, etc. However, deep neural networks are intrinsically not invariant to scale and viewpoint changes, and forcing these invariance can be hard. Further, as we revealed, this can even be harmful to training.
 
-In this work, we do not train the network directly to enforce scale invariance. Instead, we build a "descriptor-space", which is then used for matching. 
+In this work, we do not train the network directly to enforce scale invariance. Instead, we build a "descriptor-space", which is descriptors extracted from different layers of a network. These descriptors are then used for matching. 
 
 ## Setup
 
@@ -101,7 +101,7 @@ python run.py --config ./configs/msnet_v0.yaml --test DATASET.TEST HPATCHES_ILLU
 
 ## Results
 
-Here we provide some testing results with `MSNetV0`, `Superpoint`, `DAISY`, and two of our new networks based on descriptor space called `MSNetV1` and `MSNetV2`, on hpatches, hpatches viewpoint and hpatches illumination dataset. Details for these two networks are currently not publicly available. 
+Here we provide some testing results with `MSNetV0`, `Superpoint`, `DAISY`, and two of our new networks based on descriptor space called `MSNetV1` and `MSNetV2`, on hpatches, hpatches viewpoint and hpatches illumination dataset.
 
 |            | All       | Viewpoint | Illumination |
 | ---------- | --------- | --------- | ------------ |
