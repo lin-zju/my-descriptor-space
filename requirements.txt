@@ -9,7 +9,7 @@ kiwisolver==1.0.1
 matplotlib==3.0.3
 networkx==2.2
 numpy==1.16.1
-opencv-contrib-python==3.4.5.20
+opencv-contrib-python==4.2.0.32
 pandas==0.24.1
 Pillow==6.0.0
 protobuf==3.7.1
