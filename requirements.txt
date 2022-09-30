@@ -4,7 +4,7 @@ decorator==4.4.0
 dill==0.2.9
 easydict==1.9
 imageio==2.5.0
-joblib==0.13.2
+joblib==1.2.0
 kiwisolver==1.0.1
 matplotlib==3.0.3
 networkx==2.2
